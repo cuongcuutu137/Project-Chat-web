@@ -6,11 +6,11 @@ import { ChakraProvider } from '@chakra-ui/react'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <ChatProvider>
-      <ChakraProvider>
-        <App />
-      </ChakraProvider>
-    </ChatProvider>
+  <React.StrictMode>
+    <ChakraProvider>
+      <App />
+    </ChakraProvider>
+  </React.StrictMode>
 );
 
 
