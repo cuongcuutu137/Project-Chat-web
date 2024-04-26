@@ -4,11 +4,10 @@ import axios from "axios";
 const Chatpage = () => {
   const [chats, setChats] = useState([]);
   const fethChats = async () => {
+    // function get data chat api
     const { data } = await axios.get("/api/chat");
-
     setChats(data);
   };
-
   useEffect(() => {
     fethChats();
   }, []);
