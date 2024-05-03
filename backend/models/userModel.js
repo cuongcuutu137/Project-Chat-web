@@ -1,13 +1,12 @@
-const mongoose = require("monggoose");
+const mongoose = require("mongoose");
 
-const userModel = mongoose.Schema(
+const userSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     chat: { type: String, required: true },
     pic: {
       type: String,
-      required: true,
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
@@ -17,6 +16,6 @@ const userModel = mongoose.Schema(
   }
 );
 
-const User = mongoose.model("User", messageModel);
+const User = mongoose.model("User", userSchema);
 
 module.exports = User;
