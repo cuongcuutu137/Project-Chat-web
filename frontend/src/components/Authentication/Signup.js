@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { set } from "mongoose";
 import React, { useState } from "react";
+import axios from "axios";
 
 const Signup = () => {
   const [show, setShow] = useState(false);
@@ -75,8 +76,63 @@ const Signup = () => {
     }
   };
 
-  const submitHandler = () => {
-    // Handle form submission
+  const submitHandler = async () => {
+    setLoading(true);
+    if (!name || !email || !password || !confirmpassword) {
+      toast({
+        title: "Please Fill all the Fields!",
+        status: "warning",
+        duration: 5000,
+        isCloseable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (password !== confirmpassword) {
+      toast({
+        title: "Password Do Not Match",
+        status: "warning",
+        duration: 5000,
+        isCloseable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        "/api/user",
+        { name, email, password, pic },
+        config
+      );
+      toast({
+        title: "Registration Successfull",
+        status: "success",
+        duration: 5000,
+        isCloseable: true,
+        position: "bottom",
+      });
+      localStorage.setItem("userInfo", JSON.stringify(data));
+      setLoading(false);
+      window.location.href = "/chats";
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: error.response.data.message,
+        status: "error",
+        duration: 5000,
+        isCloseable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+    }
   };
 
   return (
@@ -107,6 +163,24 @@ const Signup = () => {
             placeholder="Enter Your Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+          />
+
+          <InputRightElement width="4.5rem">
+            <Button h="1.75rem" size="sm" onClick={handleClick}>
+              {show ? "Hide" : "Show"}
+            </Button>
+          </InputRightElement>
+        </InputGroup>
+      </FormControl>
+
+      <FormControl id="confirm-password-input" isRequired>
+        <FormLabel>Confirm Password</FormLabel>
+        <InputGroup>
+          <Input
+            type={show ? "text" : "password"}
+            placeholder="Confirm Your Password"
+            value={confirmpassword}
+            onChange={(e) => setConfirmpassword(e.target.value)}
           />
 
           <InputRightElement width="4.5rem">
