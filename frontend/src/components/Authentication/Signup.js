@@ -28,46 +28,50 @@ const Signup = () => {
   };
 
   const postDetails = (pics) => {
-    setLoading(true);
-    if (pics === undefined) {
-      toast({
-        title: "Please Select an Image!",
-        status: "warning",
-        duration: 5000,
-        isCloseable: true,
-        position: "bottom",
-      });
-      return;
-    }
-
-    if (pics.type === "image/jpeg" || pics.type === "image/png") {
-      const data = new FormData();
-      data.append("file", pics);
-      data.append("upload_preset", "chat-app");
-      data.append("cloud_name", "dkibbyls7");
-      fetch("https://api.cloudinary.com/v1_1/dkibbyls7/image/upload", {
-        method: "post",
-        body: data,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          setPic(data.url.toString());
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.log(err);
-          setLoading(false);
+    try {
+      setLoading(true);
+      if (pics === undefined) {
+        toast({
+          title: "Please Select an Image!",
+          status: "warning",
+          duration: 5000,
+          isCloseable: true,
+          position: "bottom",
         });
-    } else {
-      toast({
-        title: "Please Select an Image!",
-        status: "warning",
-        duration: 5000,
-        isCloseable: true,
-        position: "bottom",
-      });
-      setLoading(false);
-      return;
+        return;
+      }
+
+      if (pics.type === "image/jpeg" || pics.type === "image/png") {
+        const data = new FormData();
+        data.append("file", pics);
+        data.append("upload_preset", "chat-app");
+        data.append("cloud_name", "dkibbyls7");
+        fetch("https://api.cloudinary.com/v1_1/dkibbyls7/image/upload", {
+          method: "post",
+          body: data,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            setPic(data.url.toString());
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoading(false);
+          });
+      } else {
+        toast({
+          title: "Please Select an Image!",
+          status: "warning",
+          duration: 5000,
+          isCloseable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        return;
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
