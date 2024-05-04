@@ -6,7 +6,10 @@ import {
   InputRightElement,
   VStack,
   InputGroup,
+  position,
+  useToast,
 } from "@chakra-ui/react";
+import { set } from "mongoose";
 import React, { useState } from "react";
 
 const Signup = () => {
@@ -16,13 +19,56 @@ const Signup = () => {
   const [confirmpassword, setConfirmpassword] = useState("");
   const [password, setPassword] = useState("");
   const [pic, setPic] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const toast = useToast();
 
   const handleClick = () => {
     setShow(!show);
   };
 
   const postDetails = (pics) => {
-    setPic(pics);
+    setLoading(true);
+    if (pics === undefined) {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isCloseable: true,
+        position: "bottom",
+      });
+      return;
+    }
+
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "chat-app");
+      data.append("cloud_name", "dkibbyls7");
+      fetch("https://api.cloudinary.com/v1_1/dkibbyls7/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setPic(data.url.toString());
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setLoading(false);
+        });
+    } else {
+      toast({
+        title: "Please Select an Image!",
+        status: "warning",
+        duration: 5000,
+        isCloseable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
   };
 
   const submitHandler = () => {
@@ -40,7 +86,7 @@ const Signup = () => {
         />
       </FormControl>
 
-      <FormControl id="email" isRequired>
+      <FormControl id="email-input" isRequired>
         <FormLabel>Email</FormLabel>
         <Input
           placeholder="Enter Your Email"
@@ -49,7 +95,7 @@ const Signup = () => {
         />
       </FormControl>
 
-      <FormControl id="password" isRequired>
+      <FormControl id="password-input" isRequired>
         <FormLabel>Password</FormLabel>
         <InputGroup>
           <Input
@@ -58,6 +104,7 @@ const Signup = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
+
           <InputRightElement width="4.5rem">
             <Button h="1.75rem" size="sm" onClick={handleClick}>
               {show ? "Hide" : "Show"}
@@ -81,6 +128,7 @@ const Signup = () => {
         width="100%"
         style={{ marginTop: 15 }}
         onClick={submitHandler}
+        isLoading={loading}
       >
         Sign Up
       </Button>
