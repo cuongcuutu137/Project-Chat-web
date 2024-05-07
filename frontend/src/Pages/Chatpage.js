@@ -4,10 +4,21 @@ import axios from "axios";
 const Chatpage = () => {
   const [chats, setChats] = useState([]);
   const fethChats = async () => {
-    // function get data chat api
-    const { data } = await axios.get("/api/chat");
-    setChats(data);
+    try {
+      const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.get("/api/chat", config);
+      setChats(data);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
+
   useEffect(() => {
     fethChats();
   }, []);
