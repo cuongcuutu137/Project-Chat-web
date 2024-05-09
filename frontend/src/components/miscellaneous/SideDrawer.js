@@ -3,7 +3,7 @@ import { Box, Text } from "@chakra-ui/layout";
 import { Tooltip } from "@chakra-ui/tooltip";
 import { useState } from "react";
 import { Button } from "@chakra-ui/button";
-import { Menu, MenuButton } from "@chakra-ui/menu";
+import { Menu, MenuButton } from "@chakra-ui/react";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
 import { ChatState } from "../../Context/ChatProvider";
