@@ -133,13 +133,13 @@ const SideDrawer = () => {
         <Text fontSize="2xl" fontFamily="Work sans">
           Talk-A-Tive
         </Text>
-
-        <Menu>
-          <Flex alignItems="center">
+        <div>
+          <Menu>
             <MenuButton padding={1}>
               <BellIcon fontSize="2xl" m={1} />
             </MenuButton>
-
+          </Menu>
+          <Menu>
             <MenuButton
               as={Button}
               background="white"
@@ -152,16 +152,16 @@ const SideDrawer = () => {
                 src={user.pic}
               />
             </MenuButton>
-          </Flex>
 
-          <MenuList>
-            <ProfileModal user={user}>
-              <MenuItem>My Profile</MenuItem>
-            </ProfileModal>
-            <MenuDivider />
-            <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-          </MenuList>
-        </Menu>
+            <MenuList>
+              <ProfileModal user={user}>
+                <MenuItem>My Profile</MenuItem>
+              </ProfileModal>
+              <MenuDivider />
+              <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+            </MenuList>
+          </Menu>
+        </div>
       </Box>
 
       <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
