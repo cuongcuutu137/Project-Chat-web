@@ -70,6 +70,8 @@ const UpdateGroupChatModal = ({ fetchAgain, setFetchAgain }) => {
       user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
       setFetchAgain(!fetchAgain);
       setLoading(false);
+      if (user1._id === user._id)
+        window.location.reload();
     } catch (error) {
       toast({
         title: "Error Occured!",

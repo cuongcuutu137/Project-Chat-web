@@ -3,7 +3,6 @@ import { Box, Text } from "@chakra-ui/layout";
 import { Tooltip } from "@chakra-ui/tooltip";
 import { useState } from "react";
 import { Button } from "@chakra-ui/button";
-import { Flex } from "@chakra-ui/react";
 import {
   Menu,
   MenuButton,
