@@ -1,3 +1,5 @@
+//All user in group chat//
+
 import { Box } from "@chakra-ui/react";
 import React from "react";
 import { CloseIcon } from "@chakra-ui/icons";
