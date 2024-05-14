@@ -11,7 +11,12 @@ const Chatpage = () => {
   return (
     <div style={{ width: "100%" }}>
       {user && <SideDrawer />}
-      <Flex w="100%" h="91.5vh" p="10px">
+      <Flex
+        w="100%"
+        h="91.5vh"
+        p="10px"
+        backgroundImage="https://intoroigiare.vn/wp-content/uploads/2023/11/background-dep-de-ghep-anh.jpg"
+      >
         {user && <MyChats fetchAgain={fetchAgain} />}
         {user && (
           <ChatBox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
