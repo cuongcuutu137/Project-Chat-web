@@ -15,7 +15,7 @@ import "./styles.css";
 import ScrollableChat from "./ScrollableChat";
 import io from "socket.io-client";
 import Lottie from "react-lottie";
-import animationData from "../animations/typing.json";
+import animationData from "../animations/Animation - 1715682770441.json";
 
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
