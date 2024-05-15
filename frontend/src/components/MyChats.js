@@ -54,6 +54,9 @@ const MyChats = () => {
       borderRadius="lg"
       borderWidth="1px"
       height="100%"
+      backgroundImage="https://q8laser.com/wp-content/uploads/2022/07/hinh-nen-cam-on-2.png"
+      backgroundRepeat="no-repeat"
+      backgroundSize="cover"
     >
       <Box
         padding-bottomb={3}
