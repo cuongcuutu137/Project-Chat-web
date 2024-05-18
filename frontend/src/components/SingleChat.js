@@ -143,17 +143,24 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   };
 
   const typingHandler = (e) => {
-    //send message by handtyping function
+    // send message by handtyping function
     setNewMessage(e.target.value);
-    //Typing Indicator Logic
+
+    // Typing Indicator Logic
     if (!socketConnected) return;
-    if (!typing) {
+
+    if (e.target.value.trim() === "") {
+      //If input = {} or space
+      setTyping(false);
+      socket.emit("stop typing", selectedChat._id);
+    } else {
       setTyping(true);
       socket.emit("typing", selectedChat._id);
     }
+
     let lastTypingTime = new Date().getTime();
     var timerLength = 3000;
-    setTimeout(() => {
+    var typingTimer = setTimeout(() => {
       var timeNow = new Date().getTime();
       var timeDiff = timeNow - lastTypingTime;
       if (timeDiff >= timerLength && typing) {
@@ -161,6 +168,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setTyping(false);
       }
     }, timerLength);
+
+    // Clear the timer when the user stops typing
+    e.target.addEventListener("keyup", () => {
+      clearTimeout(typingTimer); //Cancel typingTimer
+      lastTypingTime = new Date().getTime(); //Updtae lastTypingTime = Time real
+    });
   };
 
   return (

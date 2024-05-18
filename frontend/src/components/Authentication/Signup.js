@@ -6,10 +6,9 @@ import {
   InputRightElement,
   VStack,
   InputGroup,
-  position,
   useToast,
 } from "@chakra-ui/react";
-import { set } from "mongoose";
+
 import React, { useState } from "react";
 import axios from "axios";
 
@@ -81,6 +80,19 @@ const Signup = () => {
     if (!name || !email || !password || !confirmpassword) {
       toast({
         title: "Please Fill all the Fields!",
+        status: "warning",
+        duration: 5000,
+        isCloseable: true,
+        position: "bottom",
+      });
+      setLoading(false);
+      return;
+    }
+
+    const emailRegex = /^[\w-\.]+@gmail.com$/;
+    if (!emailRegex.test(email)) {
+      toast({
+        title: "Invalid email format. Please enter a valid Gmail address.",
         status: "warning",
         duration: 5000,
         isCloseable: true,

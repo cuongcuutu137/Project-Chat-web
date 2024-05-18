@@ -67,6 +67,7 @@ const MyChats = () => {
         width="100%"
         justifyContent="space-between"
         alignItems="center"
+        paddingY={2}
       >
         My Chats
         <GroupChatModal>
@@ -74,6 +75,8 @@ const MyChats = () => {
             display="flex"
             fontSize={{ base: "17px", md: "10px", lg: "17px" }}
             rightIcon={<AddIcon />}
+            width={{ base: "auto", md: "auto", lg: "200px" }}
+            backgroundColor="#FFFFCC"
           >
             New Group Chat
           </Button>
