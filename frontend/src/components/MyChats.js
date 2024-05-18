@@ -70,17 +70,19 @@ const MyChats = () => {
         paddingY={2}
       >
         My Chats
-        <GroupChatModal>
-          <Button
-            display="flex"
-            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-            rightIcon={<AddIcon />}
-            width={{ base: "auto", md: "auto", lg: "200px" }}
-            backgroundColor="#FFFFCC"
-          >
-            New Group Chat
-          </Button>
-        </GroupChatModal>
+        <Box display="flex" alignItems="center">
+          <GroupChatModal>
+            <Button
+              display="flex"
+              fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+              rightIcon={<AddIcon />}
+              flex="1 1 auto"
+              backgroundColor="#FFFFCC"
+            >
+              New Group Chat
+            </Button>
+          </GroupChatModal>
+        </Box>
       </Box>
       <Box
         display="flex"

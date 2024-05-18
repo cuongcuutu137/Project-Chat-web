@@ -159,8 +159,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
 
     let lastTypingTime = new Date().getTime();
-    var timerLength = 3000;
-    var typingTimer = setTimeout(() => {
+    var timerLength = 5000;
+    setTimeout(() => {
       var timeNow = new Date().getTime();
       var timeDiff = timeNow - lastTypingTime;
       if (timeDiff >= timerLength && typing) {
@@ -168,12 +168,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         setTyping(false);
       }
     }, timerLength);
-
-    // Clear the timer when the user stops typing
-    e.target.addEventListener("keyup", () => {
-      clearTimeout(typingTimer); //Cancel typingTimer
-      lastTypingTime = new Date().getTime(); //Updtae lastTypingTime = Time real
-    });
   };
 
   return (

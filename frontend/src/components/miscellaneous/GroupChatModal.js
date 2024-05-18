@@ -149,8 +149,8 @@ const GroupChatModal = ({ children }) => {
               placeholder="Chat Name"
               mb={3}
               onChange={(e) => setGroupChatName(e.target.value)}
-              width="95%"
-              margin="10px"
+              width="85%"
+              marginX="32px"
             />
           </FormControl>
           <FormControl>
@@ -158,8 +158,8 @@ const GroupChatModal = ({ children }) => {
               placeholder="Add Users eg: Cuong, Ninh, Tuan"
               mb={1}
               onChange={(e) => handleSearch(e.target.value)}
-              width="95%"
-              margin="10px"
+              width="85%"
+              marginX="32px"
             />
           </FormControl>
 
