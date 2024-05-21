@@ -9,6 +9,7 @@ import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
 import axios from "axios";
 import "./styles.css";
 import ScrollableChat from "./ScrollableChat";
+import SearchMessageView from "./SearchMessageView";
 import io from "socket.io-client";
 import Lottie from "react-lottie";
 import animationData from "../animations/Animation - 1715682770441.json";
@@ -166,10 +167,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     setSearchQuery(query);
     if (query.trim() !== "") {
       const results = messages.filter((message) => {
-        const sender = getSender(user, message.sender);
         return (
-          message.content.toLowerCase().includes(query.toLowerCase()) ||
-          sender.toLowerCase().includes(query.toLowerCase())
+          message.content.toLowerCase().includes(query.toLowerCase())
         );
       });
       setSearchResults(results);
@@ -305,20 +304,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 mb={4}
               />
               {searchResults.length > 0
-                ? searchResults.map((message) => (
-                    <Box
-                      key={message._id}
-                      p={2}
-                      borderBottom="1px solid #ccc"
-                      cursor="pointer"
-                      onClick={() => handleSearchResultClick(message._id)}
-                      display="flex"
-                      alignItems="center"
-                    >
-                      <Avatar src={message.sender.avatar} mr={4} />
-                      {message.content}
-                    </Box>
-                  ))
+                ? (
+                  <SearchMessageView messages={searchResults} />
+                )
                 : searchQuery && <Text>No messages found</Text>}
             </Box>
           )}
