@@ -14,7 +14,7 @@ import io from "socket.io-client";
 import Lottie from "react-lottie";
 import animationData from "../animations/Animation - 1715682770441.json";
 import { useDisclosure } from "@chakra-ui/react";
-import { Avatar } from "@chakra-ui/avatar";
+import { Button } from "@chakra-ui/button";
 
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
@@ -32,6 +32,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchBar, setShowSearchBar] = useState(false);
+  const [search, setSearch] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
 
   const scrollRef = useRef();
 
@@ -162,37 +164,31 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }, timerLength);
   };
 
-  const handleSearch = (e) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    if (query.trim() !== "") {
-      const results = messages.filter((message) => {
-        return (
-          message.content.toLowerCase().includes(query.toLowerCase())
-        );
-      });
-      setSearchResults(results);
-    } else {
-      setSearchResults([]);
-    }
-  };
-
-  const handleSearchResultClick = (messageId) => {
-    const messageIndex = messages.findIndex(
-      (message) => message._id === messageId
-    );
-    if (messageIndex !== -1 && scrollRef.current) {
-      scrollRef.current.scrollToIndex({ index: messageIndex, align: "center" });
-    }
-    setShowSearchBar(false);
-  };
-
   const toggleSearchBar = () => {
     setShowSearchBar(!showSearchBar);
     if (!showSearchBar) {
       setSearchQuery("");
-      setSearchResults([]);
     }
+  };
+
+  const SearchMessage = () => {
+    if (!search) {
+      toast({
+        title: "Please Enter something in search",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "top-left",
+      });
+      return;
+    }
+
+    const dataSearchMessage = messages.filter((messageSearch) => {
+      return messageSearch.content.toLowerCase().includes(search.toLowerCase());
+    });
+    console.log(dataSearchMessage);
+    setSearchResults(dataSearchMessage);
+    console.log(searchResults);
   };
 
   return (
@@ -287,27 +283,31 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               position="absolute"
               top={0}
               right={0}
-              w="30%"
+              w="20%"
               h="100%"
               bg="white"
               p={4}
               borderLeft="1px solid #ccc"
               zIndex={10}
             >
-              <Text fontSize="2xl" mb={4}>
+              <Text fontSize="2xl" mb={4} padding={2} borderBottomWidth="1px">
                 Search Messages
               </Text>
-              <Input
-                placeholder="Search messages..."
-                value={searchQuery}
-                onChange={handleSearch}
-                mb={4}
-              />
-              {searchResults.length > 0
-                ? (
-                  <SearchMessageView messages={searchResults} />
-                )
-                : searchQuery && <Text>No messages found</Text>}
+              <Box display="flex" pb={2}>
+                <Input
+                  placeholder="Search messages..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  mb={4}
+                  margin-right={2}
+                />
+                <Button onClick={SearchMessage}>Go</Button>
+              </Box>
+              {searchResults.length > 0 ? (
+                <SearchMessageView messages={searchResults} />
+              ) : (
+                searchQuery && <Text>No messages found</Text>
+              )}
             </Box>
           )}
         </>
