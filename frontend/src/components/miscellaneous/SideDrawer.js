@@ -120,6 +120,12 @@ const SideDrawer = () => {
     }
   };
 
+  const DeleteResults = () => {
+    onClose();
+    setSearchResult([]);
+    setSearch("");
+  };
+
   return (
     <>
       <Box
@@ -199,7 +205,7 @@ const SideDrawer = () => {
         </div>
       </Box>
 
-      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
+      <Drawer placement="left" onClose={DeleteResults} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>

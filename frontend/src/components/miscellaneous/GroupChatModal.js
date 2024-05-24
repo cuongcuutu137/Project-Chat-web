@@ -135,6 +135,7 @@ const GroupChatModal = ({ children }) => {
             fontFamily="Work sans"
             display="flex"
             justifyContent="center"
+            paddingLeft={1}
           >
             Creat Group Chat
           </ModalHeader>

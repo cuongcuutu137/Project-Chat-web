@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ChatState } from "../Context/ChatProvider";
-import { Box, Text, Spinner, FormControl } from "@chakra-ui/react";
+import { Box, Text, Spinner, FormControl, Drawer } from "@chakra-ui/react";
 import { IconButton, Input, useToast } from "@chakra-ui/react";
 import { ArrowBackIcon, Search2Icon } from "@chakra-ui/icons";
 import { getSender, getSenderFull } from "../config/ChatLogics";
@@ -15,6 +15,12 @@ import Lottie from "react-lottie";
 import animationData from "../animations/Animation - 1715682770441.json";
 import { useDisclosure } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
+import {
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+} from "@chakra-ui/react";
 
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
@@ -164,13 +170,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }, timerLength);
   };
 
-  const toggleSearchBar = () => {
-    setShowSearchBar(!showSearchBar);
-    if (!showSearchBar) {
-      setSearchQuery("");
-    }
-  };
-
   const SearchMessage = () => {
     if (!search) {
       toast({
@@ -191,6 +190,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     console.log(searchResults);
   };
 
+  const ResetSearch = () => {
+    onClose();
+    setSearchResults([]);
+    setSearch("");
+  };
+
   return (
     <>
       {selectedChat ? (
@@ -208,7 +213,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             <IconButton
               display={{ base: "flex" }}
               icon={<Search2Icon />}
-              onClick={toggleSearchBar}
+              onClick={onOpen}
               bg="white"
             />
             <IconButton
@@ -242,6 +247,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             h="100%"
             borderRadius="lg"
             overflowY="hidden"
+            onClose={onClose}
           >
             {loading ? (
               <Spinner
@@ -278,38 +284,30 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               />
             </FormControl>
           </Box>
-          {showSearchBar && (
-            <Box
-              position="absolute"
-              top={0}
-              right={0}
-              w="20%"
-              h="100%"
-              bg="white"
-              p={4}
-              borderLeft="1px solid #ccc"
-              zIndex={10}
-            >
-              <Text fontSize="2xl" mb={4} padding={2} borderBottomWidth="1px">
+          <Drawer placement="right" onClose={ResetSearch} isOpen={isOpen}>
+            <DrawerOverlay />
+            <DrawerContent>
+              <DrawerHeader borderBottomWidth="1px">
                 Search Messages
-              </Text>
-              <Box display="flex" pb={2}>
-                <Input
-                  placeholder="Search messages..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  mb={4}
-                  margin-right={2}
-                />
-                <Button onClick={SearchMessage}>Go</Button>
-              </Box>
-              {searchResults.length > 0 ? (
-                <SearchMessageView messages={searchResults} />
-              ) : (
-                searchQuery && <Text>No messages found</Text>
-              )}
-            </Box>
-          )}
+              </DrawerHeader>
+              <DrawerBody>
+                <Box display="flex" pb={2}>
+                  <Input
+                    placeholder="Search by keyword"
+                    margin-right={2}
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                  <Button onClick={SearchMessage}>Go</Button>
+                </Box>
+                {searchResults.length > 0 ? (
+                  <SearchMessageView messages={searchResults} />
+                ) : (
+                  searchQuery && <Text>No messages found</Text>
+                )}
+              </DrawerBody>
+            </DrawerContent>
+          </Drawer>
         </>
       ) : (
         <Box
