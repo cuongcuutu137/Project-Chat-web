@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ChatState } from "../Context/ChatProvider";
 import { Box, Text, Spinner, FormControl, Drawer } from "@chakra-ui/react";
 import { IconButton, Input, useToast } from "@chakra-ui/react";
-import { ArrowBackIcon, Search2Icon } from "@chakra-ui/icons";
+import { ArrowBackIcon, Search2Icon, ArrowUpIcon } from "@chakra-ui/icons";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import ProfileModal from "./miscellaneous/ProfileModal";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModal";
@@ -20,6 +20,7 @@ import {
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
+  FormLabel,
 } from "@chakra-ui/react";
 
 const ENDPOINT = "http://localhost:5000";
@@ -40,7 +41,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
+  const [pic, setPic] = useState();
+  const [selectedFile, setSelectedFile] = useState(null);
 
+  const fileInputRef = useRef();
   const scrollRef = useRef();
 
   const defaultOptions = {
@@ -196,6 +200,90 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     setSearch("");
   };
 
+  const postDetails = (pics) => {
+    try {
+      setLoading(true);
+      if (!pics) {
+        toast({
+          title: "Please Select an Image!",
+          status: "warning",
+          duration: 5000,
+          isCloseable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (pics.type === "image/jpeg" || pics.type === "image/png") {
+        const data = new FormData();
+        data.append("file", pics);
+        data.append("upload_preset", "chat-app");
+        data.append("cloud_name", "dkibbyls7");
+        fetch("https://api.cloudinary.com/v1_1/dkibbyls7/image/upload", {
+          method: "post",
+          body: data,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            sendMessageWithImage(data.url);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        toast({
+          title: "Please Select an Image!",
+          status: "warning",
+          duration: 5000,
+          isCloseable: true,
+          position: "bottom",
+        });
+        setLoading(false);
+        return;
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const sendMessageWithImage = async (url) => {
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+
+      const { data } = await axios.post(
+        "/api/message",
+        {
+          content: url,
+          chatId: selectedChat._id,
+        },
+        config
+      );
+      console.log(data);
+      socket.emit("new message", data);
+      setMessages([...messages, data]);
+    } catch (error) {
+      toast({
+        title: "Error Occurred!",
+        description: "Failed to send the message",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current.click();
+  };
+
   return (
     <>
       {selectedChat ? (
@@ -214,7 +302,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               display={{ base: "flex" }}
               icon={<Search2Icon />}
               onClick={onOpen}
-              bg="white"
+              bg="#edf2f7"
             />
             <IconButton
               display={{ base: "flex", md: "none" }}
@@ -275,15 +363,35 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               ) : (
                 <></>
               )}
-              <Input
-                variant="filled"
-                bg="#E0E0E0"
-                placeholder="Enter a message.."
-                value={newMessage}
-                onChange={typingHandler}
-              />
+
+              <Box display="flex">
+                <IconButton
+                  display={{ base: "flex" }}
+                  icon={<ArrowUpIcon />}
+                  bg="#edf2f7"
+                  marginRight={2}
+                  onClick={handleUploadClick}
+                />
+                <Input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    postDetails(e.target.files[0]);
+                  }}
+                  style={{ display: "none" }}
+                  ref={fileInputRef}
+                />
+                <Input
+                  variant="filled"
+                  bg="#E0E0E0"
+                  placeholder="Enter a message.."
+                  value={newMessage}
+                  onChange={typingHandler}
+                />
+              </Box>
             </FormControl>
           </Box>
+
           <Drawer placement="right" onClose={ResetSearch} isOpen={isOpen}>
             <DrawerOverlay />
             <DrawerContent>

@@ -4,3 +4,26 @@
     overflow-y: scroll;
     scrollbar-width: none;
 }
+.chatContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    background-color: #0000004f;
+    z-index: 100;
+}
+.imgContent {
+    position: absolute;
+    width: auto;
+    height: auto;
+    background-color: white;
+    border-radius: 4px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.datetime {
+    color: #FFFFFF;
+    font-size: 13px;
+}
