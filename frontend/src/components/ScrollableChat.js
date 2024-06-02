@@ -97,6 +97,7 @@ const ScrollableChat = ({ messages }) => {
                       ? "50%"
                       : "75%",
                   }}
+                  onClick={() => isShowDate()}
                 >
                   <div>{m.content}</div>
                   <div>
