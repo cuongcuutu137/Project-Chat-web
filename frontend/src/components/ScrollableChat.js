@@ -12,8 +12,15 @@ import { Tooltip } from "@chakra-ui/tooltip";
 import { Image, IconButton, Input, Box } from "@chakra-ui/react";
 import Moment from "react-moment";
 import axios from "axios";
-import { EditIcon, CloseIcon, CheckIcon } from "@chakra-ui/icons";
+import { EditIcon, CloseIcon, CheckIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { useToast } from "@chakra-ui/react";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+} from '@chakra-ui/react'
 import "./styles.css";
 
 const ScrollableChat = ({ messages, setMessages }) => {
@@ -154,7 +161,7 @@ const ScrollableChat = ({ messages, setMessages }) => {
                     <Input
                       value={editContent}
                       onChange={(e) => setEditContent(e.target.value)}
-                      onKeyPress={(e) => {
+                      onClick={(e) => {
                         if (e.key === "Enter") handleEditMessage(m._id);
                       }}
                     />
@@ -187,22 +194,34 @@ const ScrollableChat = ({ messages, setMessages }) => {
                   </span>
                 )}
                 {m.sender._id === user._id && (
-                  <div className="message-buttons">
-                    <IconButton
-                      bg="#C0C0C0"
-                      size="sm"
-                      icon={<EditIcon />}
-                      onClick={() => {
-                        setIsEditing(m._id);
-                        setEditContent(m.content);
-                      }}
-                    />
-                    <IconButton
-                      bg="#C0C0C0"
-                      size="sm"
-                      icon={<CloseIcon />}
-                      onClick={() => handleDeleteMessage(m._id)}
-                    />
+                  <div>
+                    <Accordion allowToggle>
+                      <AccordionItem>
+                        <AccordionButton>
+                          <HamburgerIcon />
+                        </AccordionButton>
+                        <AccordionPanel pb={4}>
+                          <div>
+                            <IconButton
+                              bg="#C0C0C0"
+                              size="sm"
+                              icon={<EditIcon />}
+                              onClick={() => {
+                                setIsEditing(m._id);
+                                setEditContent(m.content);
+                              }}
+                            />
+                          </div>
+                          <div><IconButton
+                            bg="#C0C0C0"
+                            size="sm"
+                            icon={<CloseIcon />}
+                            onClick={() => handleDeleteMessage(m._id)}
+                          />
+                          </div>
+                        </AccordionPanel>
+                      </AccordionItem>
+                    </Accordion>
                   </div>
                 )}
               </>
