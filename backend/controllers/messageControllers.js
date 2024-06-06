@@ -44,4 +44,54 @@ const allMessages = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { sendMessage, allMessages };
+const updateMessage = asyncHandler(async (req, res) => {
+  const { messageId, newContent } = req.body;
+
+  if (!messageId || !newContent) {
+    console.log("Invalid data passed into request");
+    return res.sendStatus(400);
+  }
+
+  try {
+    const message = await Message.findByIdAndUpdate(
+      messageId,
+      { content: newContent },
+      { new: true }
+    )
+      .populate("sender", "name pic")
+      .populate("chat");
+
+    if (!message) {
+      return res.sendStatus(404);
+    }
+
+    res.json(message);
+  } catch (error) {
+    res.status(400);
+    throw new Error(error.message);
+  }
+});
+
+const deleteMessage = asyncHandler(async (req, res) => {
+  const { messageId } = req.body;
+
+  if (!messageId) {
+    console.log("Invalid data passed into request");
+    return res.sendStatus(400);
+  }
+
+  try {
+    const message = await Message.findByIdAndDelete(messageId);
+
+    if (!message) {
+      return res.sendStatus(404);
+    }
+
+    res.json({ message: "Message deleted successfully" });
+  } catch (error) {
+    res.status(400);
+    throw new Error(error.message);
+  }
+});
+
+module.exports = { sendMessage, allMessages, updateMessage, deleteMessage };
