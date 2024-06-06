@@ -86,8 +86,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-  console.log(messages);
-
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit("setup", user);
@@ -136,7 +134,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           },
           config
         );
-        console.log(data);
         socket.emit("new message", data);
         setMessages([...messages, data]);
       } catch (error) {
@@ -189,9 +186,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const dataSearchMessage = messages.filter((messageSearch) => {
       return messageSearch.content.toLowerCase().includes(search.toLowerCase());
     });
-    console.log(dataSearchMessage);
     setSearchResults(dataSearchMessage);
-    console.log(searchResults);
   };
 
   const ResetSearch = () => {
@@ -265,7 +260,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         },
         config
       );
-      console.log(data);
       socket.emit("new message", data);
       setMessages([...messages, data]);
     } catch (error) {

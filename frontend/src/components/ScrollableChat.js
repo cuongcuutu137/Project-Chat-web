@@ -24,6 +24,7 @@ const ScrollableChat = ({ messages, setMessages }) => {
   const [showDate, setShowDate] = useState(false);
   const [isEditing, setIsEditing] = useState(null);
   const [editContent, setEditContent] = useState("");
+  const [newMessage, setNewMessage] = useState(messages);
   const toast = useToast();
 
   const reviewImage = (pic) => {
@@ -33,7 +34,7 @@ const ScrollableChat = ({ messages, setMessages }) => {
 
   useEffect(() => {
     endMessage.current?.scrollIntoView();
-  }, [messages]);
+  }, [newMessage]);
 
   const isShowDate = () => {
     setShowDate(!showDate);
@@ -46,15 +47,14 @@ const ScrollableChat = ({ messages, setMessages }) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      console.log(messageId);
       const { data } = await axios.put(
         "/api/message/update",
         { messageId, newContent: editContent },
         config
       );
-      console.log(data.content);
-      setMessages((message) =>
-        message.map((msg) =>
+
+      setNewMessage((newMessage) =>
+        newMessage.map((msg) =>
           msg._id === messageId ? { ...msg, content: data.content } : msg
         )
       );
@@ -83,8 +83,8 @@ const ScrollableChat = ({ messages, setMessages }) => {
         data: { messageId },
         ...config,
       });
-      setMessages((prevMessages) =>
-        prevMessages.filter((msg) => msg._id !== messageId)
+      setNewMessage((newMessage) =>
+        newMessage.filter((msg) => msg._id !== messageId)
       );
     } catch (error) {
       toast({
@@ -107,8 +107,8 @@ const ScrollableChat = ({ messages, setMessages }) => {
           </div>
         </div>
       ) : null}
-      {messages &&
-        messages.map((m, i) => (
+      {newMessage &&
+        newMessage.map((m, i) => (
           <div style={{ display: "flex" }} key={m._id}>
             {showDate && (
               <Moment
@@ -125,27 +125,27 @@ const ScrollableChat = ({ messages, setMessages }) => {
               </Moment>
             )}
 
-            {(isSameSender(messages, m, i, user._id) ||
-              isLastMessage(messages, i, user._id)) && (
-              <Tooltip label={m.sender.name} placement="bottom-start" hasArrow>
-                <Avatar
-                  mt="7px"
-                  mr={1}
-                  size="sm"
-                  cursor="pointer"
-                  name={m.sender.name}
-                  src={m.sender.pic}
-                />
-              </Tooltip>
-            )}
+            {(isSameSender(newMessage, m, i, user._id) ||
+              isLastMessage(newMessage, i, user._id)) && (
+                <Tooltip label={m.sender.name} placement="bottom-start" hasArrow>
+                  <Avatar
+                    mt="7px"
+                    mr={1}
+                    size="sm"
+                    cursor="pointer"
+                    name={m.sender.name}
+                    src={m.sender.pic}
+                  />
+                </Tooltip>
+              )}
             {m.content.includes("res.cloudinary.com") === false ? (
               <>
                 {isEditing === m._id ? (
                   <Box
                     style={{
                       backgroundColor: "#f1f1f1",
-                      marginLeft: isSameSenderMargin(messages, m, i, user._id),
-                      marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10,
+                      marginLeft: isSameSenderMargin(newMessage, m, i, user._id),
+                      marginTop: isSameUser(newMessage, m, i, user._id) ? 3 : 10,
                       borderRadius: "20px",
                       padding: "5px 15px",
                       maxWidth: "75%",
@@ -168,11 +168,10 @@ const ScrollableChat = ({ messages, setMessages }) => {
                 ) : (
                   <span
                     style={{
-                      backgroundColor: `${
-                        m.sender._id === user._id ? "#339999" : "#3399FF"
-                      }`,
-                      marginLeft: isSameSenderMargin(messages, m, i, user._id),
-                      marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10,
+                      backgroundColor: `${m.sender._id === user._id ? "#339999" : "#3399FF"
+                        }`,
+                      marginLeft: isSameSenderMargin(newMessage, m, i, user._id),
+                      marginTop: isSameUser(newMessage, m, i, user._id) ? 3 : 10,
                       borderRadius: "20px",
                       padding: "5px 15px",
                       maxWidth: "75%",
@@ -213,8 +212,8 @@ const ScrollableChat = ({ messages, setMessages }) => {
                 style={{
                   maxWidth: 200,
                   maxHeight: 250,
-                  marginLeft: isSameSenderMargin(messages, m, i, user._id),
-                  marginTop: isSameUser(messages, m, i, user._id) ? 3 : 10,
+                  marginLeft: isSameSenderMargin(newMessage, m, i, user._id),
+                  marginTop: isSameUser(newMessage, m, i, user._id) ? 3 : 10,
                   borderRadius: "10px",
                 }}
                 onClick={() => reviewImage(m.content)}

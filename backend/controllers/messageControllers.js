@@ -46,7 +46,6 @@ const allMessages = asyncHandler(async (req, res) => {
 
 const updateMessage = asyncHandler(async (req, res) => {
   const { messageId, newContent } = req.body;
-
   if (!messageId || !newContent) {
     console.log("Invalid data passed into request");
     return res.sendStatus(400);
