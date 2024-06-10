@@ -20,7 +20,6 @@ import {
   DrawerHeader,
   DrawerOverlay,
   DrawerContent,
-  FormLabel,
 } from "@chakra-ui/react";
 
 const ENDPOINT = "http://localhost:5000";
@@ -36,13 +35,10 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [socketConnected, setSocketConnected] = useState(false);
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [showSearchBar, setShowSearchBar] = useState(false);
+
   const [search, setSearch] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
-  const [pic, setPic] = useState();
-  const [selectedFile, setSelectedFile] = useState(null);
 
   const fileInputRef = useRef();
   const scrollRef = useRef();

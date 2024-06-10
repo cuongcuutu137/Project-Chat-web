@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import ScrollableFeed from "react-scrollable-feed";
+
 import {
   isLastMessage,
   isSameSender,
@@ -12,16 +12,22 @@ import { Tooltip } from "@chakra-ui/tooltip";
 import { Image, IconButton, Input, Box } from "@chakra-ui/react";
 import Moment from "react-moment";
 import axios from "axios";
-import { EditIcon, CloseIcon, CheckIcon, HamburgerIcon } from "@chakra-ui/icons";
+import {
+  EditIcon,
+  CloseIcon,
+  CheckIcon,
+  HamburgerIcon,
+  SunIcon,
+} from "@chakra-ui/icons";
 import { useToast } from "@chakra-ui/react";
 import {
   Accordion,
   AccordionItem,
   AccordionButton,
   AccordionPanel,
-  AccordionIcon,
-} from '@chakra-ui/react'
+} from "@chakra-ui/react";
 import "./styles.css";
+import EmojiPicker from "emoji-picker-react";
 
 const ScrollableChat = ({ messages, setMessages }) => {
   const { user } = ChatState();
@@ -33,6 +39,8 @@ const ScrollableChat = ({ messages, setMessages }) => {
   const [editContent, setEditContent] = useState("");
   const [newMessage, setNewMessage] = useState(messages);
   const toast = useToast();
+  const [showEmojiPicker, setShowEmojiPicker] = useState(null);
+  const [selectedEmoji, setSelectedEmoji] = useState({});
 
   const reviewImage = (pic) => {
     setShowImg(true);
@@ -105,6 +113,11 @@ const ScrollableChat = ({ messages, setMessages }) => {
     }
   };
 
+  const onEmojiClick = (emojiObject, messageId) => {
+    setSelectedEmoji({ ...selectedEmoji, [messageId]: emojiObject.emoji });
+    setShowEmojiPicker(null);
+  };
+
   return (
     <>
       {showImg ? (
@@ -134,25 +147,32 @@ const ScrollableChat = ({ messages, setMessages }) => {
 
             {(isSameSender(newMessage, m, i, user._id) ||
               isLastMessage(newMessage, i, user._id)) && (
-                <Tooltip label={m.sender.name} placement="bottom-start" hasArrow>
-                  <Avatar
-                    mt="7px"
-                    mr={1}
-                    size="sm"
-                    cursor="pointer"
-                    name={m.sender.name}
-                    src={m.sender.pic}
-                  />
-                </Tooltip>
-              )}
+              <Tooltip label={m.sender.name} placement="bottom-start" hasArrow>
+                <Avatar
+                  mt="7px"
+                  mr={1}
+                  size="sm"
+                  cursor="pointer"
+                  name={m.sender.name}
+                  src={m.sender.pic}
+                />
+              </Tooltip>
+            )}
             {m.content.includes("res.cloudinary.com") === false ? (
               <>
                 {isEditing === m._id ? (
                   <Box
                     style={{
                       backgroundColor: "#f1f1f1",
-                      marginLeft: isSameSenderMargin(newMessage, m, i, user._id),
-                      marginTop: isSameUser(newMessage, m, i, user._id) ? 3 : 10,
+                      marginLeft: isSameSenderMargin(
+                        newMessage,
+                        m,
+                        i,
+                        user._id
+                      ),
+                      marginTop: isSameUser(newMessage, m, i, user._id)
+                        ? 3
+                        : 10,
                       borderRadius: "20px",
                       padding: "5px 15px",
                       maxWidth: "75%",
@@ -175,10 +195,18 @@ const ScrollableChat = ({ messages, setMessages }) => {
                 ) : (
                   <span
                     style={{
-                      backgroundColor: `${m.sender._id === user._id ? "#339999" : "#3399FF"
-                        }`,
-                      marginLeft: isSameSenderMargin(newMessage, m, i, user._id),
-                      marginTop: isSameUser(newMessage, m, i, user._id) ? 3 : 10,
+                      backgroundColor: `${
+                        m.sender._id === user._id ? "#339999" : "#3399FF"
+                      }`,
+                      marginLeft: isSameSenderMargin(
+                        newMessage,
+                        m,
+                        i,
+                        user._id
+                      ),
+                      marginTop: isSameUser(newMessage, m, i, user._id)
+                        ? 3
+                        : 10,
                       borderRadius: "20px",
                       padding: "5px 15px",
                       maxWidth: "75%",
@@ -212,18 +240,44 @@ const ScrollableChat = ({ messages, setMessages }) => {
                               }}
                             />
                           </div>
-                          <div><IconButton
-                            bg="#C0C0C0"
-                            size="sm"
-                            icon={<CloseIcon />}
-                            onClick={() => handleDeleteMessage(m._id)}
-                          />
+                          <div>
+                            <IconButton
+                              bg="#C0C0C0"
+                              size="sm"
+                              icon={<CloseIcon />}
+                              onClick={() => handleDeleteMessage(m._id)}
+                            />
                           </div>
                         </AccordionPanel>
                       </AccordionItem>
                     </Accordion>
                   </div>
                 )}
+                <div className="emoji-container">
+                  {selectedEmoji[m._id] ? (
+                    <span>{selectedEmoji[m._id]}</span>
+                  ) : (
+                    <>
+                      <SunIcon
+                        className="emoji-icon"
+                        onClick={() =>
+                          setShowEmojiPicker(
+                            showEmojiPicker === m._id ? null : m._id
+                          )
+                        }
+                      />
+                      {showEmojiPicker === m._id && (
+                        <div className="emoji-picker-container">
+                          <EmojiPicker
+                            onEmojiClick={(event, emojiObject) =>
+                              onEmojiClick(emojiObject, m._id)
+                            }
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
               </>
             ) : (
               <Image
